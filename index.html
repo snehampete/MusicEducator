@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Feature Explorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 40px 20px;
+            background: #f8f9ff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .upload-area:hover {
+            background: #e8ebff;
+            border-color: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .upload-area.dragover {
+            background: #e8ebff;
+            border-color: #5a67d8;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .upload-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+
+        .upload-content p {
+            color: #718096;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .demo-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .demo-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Analysis Results */
+        .analysis-container {
+            display: none;
+        }
+
+        .analysis-container.show {
+            display: block;
+        }
+
+        /* Loading State */
+        .loading {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Category Sections */
+        .category-section {
+            background: white;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .category-header {
+            padding: 25px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .category-header:hover {
+            background: linear-gradient(135deg, #5a67d8, #6b46c1);
+        }
+
+        .category-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .category-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        .category-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .category-name {
+            margin-bottom: 5px;
+        }
+
+        .category-desc {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .expand-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .category-section.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .category-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .category-section.expanded .category-content {
+            max-height: 1000px;
+        }
+
+        .features-grid {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* Feature Cards (placeholder for next step) */
+        .feature-card {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .upload-section {
+                padding: 25px;
+            }
+
+            .upload-area {
+                padding: 25px 15px;
+            }
+
+            .demo-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .demo-btn {
+                width: 100%;
+                max-width: 250px;
+            }
+
+            .category-header {
+                padding: 20px;
+            }
+
+            .category-title {
+                font-size: 1.1rem;
+            }
+
+            .category-icon {
+                font-size: 1.3rem;
+                margin-right: 10px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                padding: 20px;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .upload-section {
+                padding: 20px;
+            }
+
+            .category-header {
+                padding: 15px;
+            }
+
+            .features-grid {
+                padding: 15px;
+            }
+        }
+
+        /* Accessibility */
+        .category-header:focus {
+            outline: 3px solid rgba(255, 255, 255, 0.5);
+            outline-offset: 2px;
+        }
+
+        .demo-btn:focus,
+        .upload-area:focus {
+            outline: 3px solid rgba(102, 126, 234, 0.5);
+            outline-offset: 2px;
+        }
+
+        /* Animation for smooth reveals */
+        .category-section {
+            animation: slideInUp 0.3s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+/* IMPROVED FEATURE CARD STYLING */
+
+.feature-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 8px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.feature-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.feature-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.feature-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.feature-icon {
+    font-size: 20px;
+}
+
+.feature-name {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 15px;
+}
+
+.confidence-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.confidence-high {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.confidence-medium {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.confidence-low {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #f1f5f9;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s ease;
+}
+
+.progress-low { background: linear-gradient(90deg, #64748b, #94a3b8); }
+.progress-medium-low { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.progress-medium-high { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.progress-high { background: linear-gradient(90deg, #10b981, #34d399); }
+
+.progress-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    min-width: 40px;
+    text-align: right;
+}
+
+.feature-interpretation {
+    background: #f8fafc;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #475569;
+    margin-bottom: 10px;
+    border-left: 3px solid #e2e8f0;
+}
+
+/* NEW: Technical value with explanation */
+.feature-value-technical {
+    background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%);
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 3px solid #0288d1;
+    text-align: center;
+}
+
+.technical-number {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0277bd;
+    margin-bottom: 4px;
+    font-family: 'Courier New', monospace;
+}
+
+.technical-explanation {
+    font-size: 13px;
+    color: #0369a1;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+/* Remove the old styles */
+.feature-value-friendly {
+    display: none;
+}
+
+/* Hide the old technical value by default */
+.feature-value {
+    display: none;
+}
+
+/* Tooltip improvements */
+.floating-tooltip {
+    position: absolute;
+    background: #1e293b;
+    color: white;
+    padding: 16px;
+    border-radius: 12px;
+    max-width: 300px;
+    z-index: 1000;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.tooltip-section {
+    margin-bottom: 12px;
+}
+
+.tooltip-section:last-child {
+    margin-bottom: 0;
+}
+
+.tooltip-section strong {
+    color: #60a5fa;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.tooltip-section p {
+    margin: 0;
+    color: #e2e8f0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .feature-card {
+        padding: 14px;
+        margin: 6px 0;
+    }
+    
+    .feature-name {
+        font-size: 14px;
+    }
+    
+    .feature-value-friendly {
+        font-size: 13px;
+        padding: 10px;
+    }
+}
+/* IMPROVED SHAP ANALYSIS STYLING */
+
+.shap-analysis-section {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin: 24px 0;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.shap-header h2 {
+    color: #1e293b;
+    margin-bottom: 8px;
+    font-size: 24px;
+}
+
+.shap-header p {
+    color: #64748b;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.shap-explanation {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 20px;
+    border-radius: 12px;
+    margin: 20px 0;
+    border-left: 4px solid #3b82f6;
+}
+
+.shap-explanation h4 {
+    color: #1e293b;
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.shap-explanation p {
+    margin: 8px 0;
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.shap-features {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.shap-feature {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.shap-feature:hover {
+    background: #f1f5f9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.shap-feature-info {
+    width: 280px;
+    margin-right: 20px;
+}
+
+.shap-feature-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.shap-feature-desc {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+.shap-bar-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.shap-bar {
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.shap-positive { 
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.shap-negative { 
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.shap-value {
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.shap-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 60px;
+}
+
+.shap-arrow {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.shap-arrow.positive {
+    color: #16a34a;
+}
+
+.shap-arrow.negative {
+    color: #dc2626;
+}
+
+.shap-direction {
+    font-size: 11px;
+    font-weight: 500;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.shap-learn-more {
+    background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 4px solid #f59e0b;
+    margin-top: 24px;
+}
+
+.shap-learn-more h4 {
+    color: #92400e;
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.shap-learn-more p {
+    color: #a16207;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .shap-feature {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .shap-feature-info {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 12px;
+    }
+    
+    .shap-bar-container {
+        justify-content: space-between;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎵 Music Feature Simplifier!!</h1>
+            <p>Discover what makes your music unique through intelligent audio analysis(and find whether your song suits classical,jazz,pop or disco with a model at decent 82% accuracy!)</p>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-content">
+                    <h3>📁 Upload Your Music</h3>
+                    <p>Drag & drop an audio file or click to select</p>
+                    <p style="font-size: 0.9rem; color: #a0aec0;">Supports MP3, WAV, M4A • Max 50MB</p>
+                </div>
+                <input type="file" id="fileInput" class="file-input" accept=".mp3,.wav,.m4a" />
+            </div>
+            
+            
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading" style="display: none;">
+            <div class="loading-spinner"></div>
+            <h3>🔍 Analyzing Your Music...</h3>
+            <p>Extracting audio features and preparing insights</p>
+        </div>
+
+        <!-- Analysis Results Container -->
+        <div id="analysisContainer" class="analysis-container">
+            <!-- Category: Rhythm & Timing -->
+            <div class="category-section" data-category="rhythm">
+                <div class="category-header" onclick="toggleCategory('rhythm')">
+                    <div class="category-title">
+                        <span class="category-icon">🥁</span>
+                        <div class="category-info">
+                            <div class="category-name">Rhythm & Timing</div>
+                            <div class="category-desc">How the music moves in time</div>
+                        </div>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="category-content">
+                    <div class="features-grid" id="rhythmFeatures">
+                        <!-- Feature cards will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category: Sound Color & Texture -->
+            <div class="category-section" data-category="timbre">
+                <div class="category-header" onclick="toggleCategory('timbre')">
+                    <div class="category-title">
+                        <span class="category-icon">🌈</span>
+                        <div class="category-info">
+                            <div class="category-name">Sound Color & Texture</div>
+                            <div class="category-desc">What makes sounds unique</div>
+                        </div>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="category-content">
+                    <div class="features-grid" id="timbreFeatures">
+                        <!-- Feature cards will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category: Voice & Instrument Texture -->
+            <div class="category-section" data-category="texture">
+                <div class="category-header" onclick="toggleCategory('texture')">
+                    <div class="category-title">
+                        <span class="category-icon">🎤</span>
+                        <div class="category-info">
+                            <div class="category-name">Voice & Instrument Texture</div>
+                            <div class="category-desc">Fine details of how things sound</div>
+                        </div>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="category-content">
+                    <div class="features-grid" id="textureFeatures">
+                        <!-- Feature cards will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category: Musical Notes & Harmony -->
+            <div class="category-section" data-category="harmony">
+                <div class="category-header" onclick="toggleCategory('harmony')">
+                    <div class="category-title">
+                        <span class="category-icon">🎹</span>
+                        <div class="category-info">
+                            <div class="category-name">Musical Notes & Harmony</div>
+                            <div class="category-desc">Which notes and chords are present</div>
+                        </div>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="category-content">
+                    <div class="features-grid" id="harmonyFeatures">
+                        <!-- Feature cards will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category: Musical Style Characteristics -->
+            <div class="category-section" data-category="style">
+                <div class="category-header" onclick="toggleCategory('style')">
+                    <div class="category-title">
+                        <span class="category-icon">🎸</span>
+                        <div class="category-info">
+                            <div class="category-name">Musical Style Characteristics</div>
+                            <div class="category-desc">What makes it sound like specific genres</div>
+                        </div>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="category-content">
+                    <div class="features-grid" id="styleFeatures">
+                        <!-- Feature cards will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category: Energy & Dynamics -->
+            <div class="category-section" data-category="energy">
+                <div class="category-header" onclick="toggleCategory('energy')">
+                    <div class="category-title">
+                        <span class="category-icon">💪</span>
+                        <div class="category-info">
+                            <div class="category-name">Energy & Dynamics</div>
+                            <div class="category-desc">How loud and powerful the music is</div>
+                        </div>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="category-content">
+                    <div class="features-grid" id="energyFeatures">
+                        <!-- Feature cards will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  
+
+
+
+<script>
+// Clean, working JavaScript that calls your Python backend
+console.log("🚨 SECOND SCRIPT LOADED!");
+// Educational content manager
+class EducationalContent {
+    constructor() {
+        this.educationalData = {
+            rhythm: {
+                title: "Understanding Rhythm & Timing",
+                icon: "🥁",
+                explanation: "Rhythm is the heartbeat of music - it's what makes you tap your foot or dance!",
+                concepts: [
+                    {
+                        name: "Tempo (BPM)",
+                        description: "Beats Per Minute - how fast the music's heart is beating",
+                        analogy: "Like your heart rate: 60 BPM = resting, 120 BPM = walking, 180 BPM = running"
+                    }
+                ]
+            },
+            timbre: {
+                title: "Understanding Sound Color & Texture",
+                icon: "🌈",
+                explanation: "Just like colors make a painting unique, sound colors make music unique!",
+                concepts: []
+            },
+            texture: {
+                title: "Understanding Voice & Instrument Texture",
+                icon: "🎤",
+                explanation: "Every voice and instrument has a unique 'fingerprint' - that's texture!",
+                concepts: []
+            },
+            harmony: {
+                title: "Understanding Musical Notes & Harmony",
+                icon: "🎹",
+                explanation: "Music is built from 12 basic notes - like colors in a painter's palette!",
+                concepts: []
+            },
+            style: {
+                title: "Understanding Musical Style Characteristics",
+                icon: "🎸",
+                explanation: "Certain audio characteristics make music sound like specific genres!",
+                concepts: []
+            },
+            energy: {
+                title: "Understanding Energy & Dynamics",
+                icon: "💪",
+                explanation: "How loud, powerful, and dynamic the music is - its emotional impact!",
+                concepts: []
+            }
+        };
+        
+        this.addEducationalButtons();
+    }
+    
+    addEducationalButtons() {
+        document.querySelectorAll('.category-header').forEach(header => {
+            const category = header.parentElement.dataset.category;
+            
+            const learnButton = document.createElement('button');
+            learnButton.className = 'learn-button';
+            learnButton.innerHTML = 'ℹ️ Learn About This';
+            learnButton.onclick = (e) => {
+                e.stopPropagation();
+                this.toggleEducationalContent(category);
+            };
+            
+            const expandIcon = header.querySelector('.expand-icon');
+            header.insertBefore(learnButton, expandIcon);
+        });
+    }
+    
+    toggleEducationalContent(category) {
+        const section = document.querySelector(`[data-category="${category}"]`);
+        let eduSection = section.querySelector('.educational-section');
+        
+        if (eduSection) {
+            eduSection.remove();
+        } else {
+            eduSection = this.createEducationalSection(category);
+            const categoryContent = section.querySelector('.category-content');
+            categoryContent.insertBefore(eduSection, categoryContent.firstChild);
+        }
+    }
+    
+    createEducationalSection(category) {
+        const data = this.educationalData[category];
+        
+        const section = document.createElement('div');
+        section.className = 'educational-section';
+        section.innerHTML = `
+            <div class="educational-header">
+                <h3>${data.icon} ${data.title}</h3>
+                <p class="educational-explanation">${data.explanation}</p>
+            </div>
+        `;
+        
+        return section;
+    }
+}
+
+// IMPROVED FEATURE CARD GENERATOR WITH USER-FRIENDLY VALUES
+
+class FeatureCardGenerator {
+    constructor() {
+        this.audioIcons = {
+            'tempo': '🥁',
+            'spectral_centroid': '✨',
+            'spectral_bandwidth': '📊',
+            'spectral_rolloff': '🔊',
+            'zero_crossing_rate': '⚡',
+            'twang_index': '🤠',
+            'distortion_ratio': '🎸',
+            'rms_energy': '💪'
+        };
+        
+        for (let i = 0; i <= 12; i++) {
+            this.audioIcons[`mfcc_${i}`] = '🎤';
+        }
+        for (let i = 0; i <= 11; i++) {
+            this.audioIcons[`chroma_${i}`] = '🎹';
+        }
+        for (let i = 0; i <= 6; i++) {
+            this.audioIcons[`spectral_contrast_${i}`] = '🌈';
+        }
+        this.audioIcons['tonnetz_0'] = '🎼';
+    }
+
+    createFeatureCard(featureData) {
+        const icon = this.audioIcons[featureData.name] || '🎵';
+        const confidenceColor = this.getConfidenceColor(featureData.confidence.level);
+        const progressGradient = this.getProgressGradient(featureData.visual_level);
+        
+        // Get user-friendly value explanation
+        const valueExplanation = this.getValueExplanation(featureData);
+        
+        const card = document.createElement('div');
+        card.className = 'feature-card';
+        card.innerHTML = `
+            <div class="feature-header">
+                <div class="feature-title">
+                    <span class="feature-icon">${icon}</span>
+                    <span class="feature-name">${featureData.display_name}</span>
+                </div>
+                <div class="confidence-badge ${confidenceColor}">
+                    ${featureData.confidence.level}
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill ${progressGradient}" 
+                         style="width: ${featureData.visual_level}%">
+                    </div>
+                </div>
+                <div class="progress-value">${Math.round(featureData.visual_level)}%</div>
+            </div>
+            
+            <div class="feature-interpretation">
+                ${featureData.interpretation}
+            </div>
+            
+            <div class="feature-value-technical">
+                <div class="technical-number">${featureData.value.toFixed(3)} ${featureData.unit}</div>
+                <div class="technical-explanation">${valueExplanation}</div>
+            </div>
+            
+            <div class="tooltip-content">
+                <div class="tooltip-section">
+                    <strong>What this means:</strong>
+                    <p>${featureData.explanation}</p>
+                </div>
+                <div class="tooltip-section">
+                    <strong>Think of it like:</strong>
+                    <p>${featureData.analogy}</p>
+                </div>
+                <div class="tooltip-section">
+                    <strong>Listen for this:</strong>
+                    <p>${featureData.listen_tip}</p>
+                </div>
+                <div class="tooltip-section">
+                    <strong>Technical value:</strong>
+                    <p>${featureData.value.toFixed(3)} ${featureData.unit}</p>
+                </div>
+                <div class="tooltip-section">
+                    <strong>Reliability:</strong>
+                    <p>${featureData.confidence.description}</p>
+                </div>
+            </div>
+        `;
+        
+        this.addTooltipBehavior(card);
+        return card;
+    }
+    
+    getValueExplanation(featureData) {
+        const name = featureData.name;
+        const value = featureData.value;
+        const level = featureData.visual_level;
+        
+        // Tempo gets special treatment (BPM is meaningful)
+        if (name === 'tempo') {
+            if (value < 70) {
+                return "Very slow - ballad or ambient pace";
+            } else if (value < 90) {
+                return "Slow - relaxed walking pace";
+            } else if (value < 110) {
+                return "Moderate - comfortable groove";
+            } else if (value < 140) {
+                return "Fast - energetic and driving";
+            } else {
+                return "Very fast - high energy dance pace";
+            }
+        }
+        
+        // For MFCCs, explain what the coefficient magnitude means
+        if (name.startsWith('mfcc_')) {
+            const absValue = Math.abs(value);
+            if (absValue < 5) {
+                return `Coefficient ${value.toFixed(1)} = subtle audio characteristic`;
+            } else if (absValue < 15) {
+                return `Coefficient ${value.toFixed(1)} = moderate audio characteristic`;
+            } else if (absValue < 30) {
+                return `Coefficient ${value.toFixed(1)} = prominent audio characteristic`;
+            } else {
+                return `Coefficient ${value.toFixed(1)} = very strong audio characteristic`;
+            }
+        }
+        
+        // For chroma, explain the 0-1 scale
+        if (name.startsWith('chroma_')) {
+            const percentage = Math.round(value * 100);
+            if (value < 0.2) {
+                return `${percentage}% note presence - barely detectable`;
+            } else if (value < 0.4) {
+                return `${percentage}% note presence - weakly present`;
+            } else if (value < 0.6) {
+                return `${percentage}% note presence - moderately present`;
+            } else if (value < 0.8) {
+                return `${percentage}% note presence - strongly present`;
+            } else {
+                return `${percentage}% note presence - dominantly present`;
+            }
+        }
+        
+        // For spectral contrast, explain the dB scale
+        if (name.startsWith('spectral_contrast_')) {
+            if (value < 10) {
+                return `${value.toFixed(1)} dB contrast - smooth frequency balance`;
+            } else if (value < 20) {
+                return `${value.toFixed(1)} dB contrast - moderate frequency variation`;
+            } else if (value < 30) {
+                return `${value.toFixed(1)} dB contrast - high frequency dynamics`;
+            } else {
+                return `${value.toFixed(1)} dB contrast - extreme frequency variation`;
+            }
+        }
+        
+        // For tonnetz, explain the harmonic coordinate
+        if (name === 'tonnetz_0') {
+            const absValue = Math.abs(value);
+            if (absValue < 0.2) {
+                return `Coordinate ${value.toFixed(2)} = stable consonant harmony`;
+            } else if (absValue < 0.5) {
+                return `Coordinate ${value.toFixed(2)} = some harmonic tension`;
+            } else if (absValue < 0.8) {
+                return `Coordinate ${value.toFixed(2)} = unstable dissonant harmony`;
+            } else {
+                return `Coordinate ${value.toFixed(2)} = highly dissonant harmony`;
+            }
+        }
+        
+        // Default explanation with actual value context
+        return `Value ${value.toFixed(2)} - audio measurement coefficient`;
+    }
+    
+    getConfidenceColor(level) {
+        switch(level.toLowerCase()) {
+            case 'high': return 'confidence-high';
+            case 'medium': return 'confidence-medium';
+            default: return 'confidence-low';
+        }
+    }
+    
+    getProgressGradient(value) {
+        if (value < 25) return 'progress-low';
+        if (value < 50) return 'progress-medium-low';
+        if (value < 75) return 'progress-medium-high';
+        return 'progress-high';
+    }
+    
+    addTooltipBehavior(card) {
+        const tooltip = card.querySelector('.tooltip-content');
+        let tooltipElement = null;
+        
+        card.addEventListener('mouseenter', (e) => {
+            tooltipElement = document.createElement('div');
+            tooltipElement.className = 'floating-tooltip';
+            tooltipElement.innerHTML = tooltip.innerHTML;
+            document.body.appendChild(tooltipElement);
+            
+            this.positionTooltip(e, tooltipElement);
+        });
+        
+        card.addEventListener('mousemove', (e) => {
+            if (tooltipElement) {
+                this.positionTooltip(e, tooltipElement);
+            }
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            if (tooltipElement) {
+                tooltipElement.remove();
+                tooltipElement = null;
+            }
+        });
+    }
+    
+    positionTooltip(e, tooltip) {
+        const rect = tooltip.getBoundingClientRect();
+        const x = e.clientX + 15;
+        const y = e.clientY - rect.height - 10;
+        
+        const maxX = window.innerWidth - rect.width - 20;
+        const maxY = window.innerHeight - rect.height - 20;
+        
+        tooltip.style.left = Math.min(x, maxX) + 'px';
+        tooltip.style.top = Math.max(y, 20) + 'px';
+    }
+}
+
+// Initialize components
+const cardGenerator = new FeatureCardGenerator();
+
+// DOM elements
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('fileInput');
+const loadingState = document.getElementById('loadingState');
+const analysisContainer = document.getElementById('analysisContainer');
+
+// File upload handling
+uploadArea.addEventListener('click', () => {
+    fileInput.click();
+});
+
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('dragover');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        handleFile(files[0]);
+    }
+});
+
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        handleFile(e.target.files[0]);
+    }
+});
+
+// Handle real file upload to Python backend
+async function handleFile(file) {
+    if (!file.type.match(/audio\/(mp3|wav|mpeg|x-wav|mp4|m4a)/)) {
+        alert('Please select a valid audio file (MP3, WAV, M4A)');
+        return;
+    }
+
+    if (file.size > 50 * 1024 * 1024) {
+        alert('File size must be less than 50MB');
+        return;
+    }
+
+    showLoading();
+    
+    try {
+        const formData = new FormData();
+        formData.append('audio', file);
+        
+        const response = await fetch('/analyze', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+        
+        const results = await response.json();
+        
+        if (results.success) {
+            populateAnalysisResults(results);
+        } else {
+            throw new Error(results.error || 'Analysis failed');
+        }
+        
+    } catch (error) {
+        console.error('Analysis error:', error);
+        alert(`Analysis failed: ${error.message}\n\nMake sure your Python backend is running!`);
+        loadingState.style.display = 'none';
+    }
+}
+
+// Demo button functionality - calls Python backend
+async function loadDemoNew(genre) {
+    showLoading();
+    
+    try {
+        console.log(`Calling backend demo for genre: ${genre}`);
+        const response = await fetch(`/demo/${genre}`);
+        console.log('Response received:', response);
+        
+        if (!response.ok) {
+            throw new Error(`Server responded with ${response.status}`);
+        }
+        
+        const results = await response.json();
+        console.log('Results:', results);
+        
+        if (results.success) {
+            populateAnalysisResults(results);
+        } else {
+            throw new Error('Demo failed');
+        }
+    } catch (error) {
+        console.error('Demo error:', error);
+        alert(`Demo failed: ${error.message}\n\nMake sure your Python backend is running!`);
+        loadingState.style.display = 'none';
+    }
+}
+
+// Show loading state
+function showLoading() {
+    loadingState.style.display = 'block';
+    analysisContainer.classList.remove('show');
+}
+
+// Toggle category sections
+function toggleCategory(categoryName) {
+    const section = document.querySelector(`[data-category="${categoryName}"]`);
+    section.classList.toggle('expanded');
+}
+
+// Populate analysis results with real data from Python backend
+function populateAnalysisResults(results) {
+    loadingState.style.display = 'none';
+    analysisContainer.classList.add('show');
+    
+    console.log('Populating results:', results);
+    
+    // Clear existing content
+    ['rhythm', 'timbre', 'texture', 'harmony', 'style', 'energy'].forEach(category => {
+        const container = document.getElementById(`${category}Features`);
+        if (container) {
+            container.innerHTML = '';
+        }
+    });
+    
+    // Add genre prediction summary if available
+    if (results.genre_prediction && !results.demo) {
+        addGenrePredictionSummary(results.genre_prediction);
+    }
+
+        // STEP 3: UPDATE YOUR populateAnalysisResults FUNCTION
+// Add this line after the genre prediction section:
+
+    if (results.shap_analysis && results.shap_analysis.feature_importance) {
+    displayShapAnalysis(results.shap_analysis.feature_importance);
+    }
+    
+    // Populate feature categories
+    if (results.features_by_category) {
+        Object.entries(results.features_by_category).forEach(([category, features]) => {
+            const container = document.getElementById(`${category}Features`);
+            if (container) {
+                features.forEach(feature => {
+                    const card = cardGenerator.createFeatureCard(feature);
+                    container.appendChild(card);
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, Math.random() * 500);
+                });
+            }
+        });
+    }
+    
+    // Expand first category by default
+    document.querySelector('[data-category="rhythm"]').classList.add('expanded');
+}
+
+
+// Add genre prediction summary
+function addGenrePredictionSummary(genrePrediction) {
+    const summaryDiv = document.createElement('div');
+    summaryDiv.className = 'genre-prediction-summary';
+    summaryDiv.innerHTML = `
+        <div class="prediction-header">
+            <h2>🎯 Genre Analysis Results</h2>
+        </div>
+        <div class="primary-prediction">
+            <span class="genre-label">Primary Genre:</span>
+            <span class="genre-value">${genrePrediction.primary_genre}</span>
+        </div>
+        <div class="probability-bars">
+            ${Object.entries(genrePrediction.probabilities)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(([genre, prob]) => `
+                    <div class="prob-bar">
+                        <span class="prob-label">${genre}</span>
+                        <div class="prob-progress">
+                            <div class="prob-fill" style="width: ${prob * 100}%"></div>
+                        </div>
+                        <span class="prob-value">${(prob * 100).toFixed(1)}%</span>
+                    </div>
+                `).join('')}
+        </div>
+    `;
+    
+    analysisContainer.insertBefore(summaryDiv, analysisContainer.firstChild);
+}
+
+    // STEP 2: ADD SHAP DISPLAY TO YOUR FRONTEND
+    // Add this JavaScript function to your frontend file:
+
+// IMPROVED SHAP DISPLAY WITH USER-FRIENDLY EXPLANATIONS
+
+function displayShapAnalysis(shapData) {
+    console.log('Displaying SHAP analysis:', shapData);
+    
+    // Find or create SHAP section
+    let shapSection = document.getElementById('shapAnalysis');
+    if (!shapSection) {
+        shapSection = document.createElement('div');
+        shapSection.id = 'shapAnalysis';
+        shapSection.className = 'shap-analysis-section';
+        
+        // Insert after genre prediction summary
+        const genreSection = document.querySelector('.genre-prediction-summary');
+        if (genreSection) {
+            genreSection.parentNode.insertBefore(shapSection, genreSection.nextSibling);
+        } else {
+            analysisContainer.insertBefore(shapSection, analysisContainer.firstChild);
+        }
+    }
+    
+    // Sort features by absolute importance
+    const sortedFeatures = Object.entries(shapData)
+        .map(([name, importance]) => ({
+            name,
+            importance: parseFloat(importance),
+            absImportance: Math.abs(parseFloat(importance))
+        }))
+        .sort((a, b) => b.absImportance - a.absImportance)
+        .slice(0, 8); // Top 8 most important for better readability
+    
+    const maxImportance = Math.max(...sortedFeatures.map(f => f.absImportance));
+    
+    shapSection.innerHTML = `
+        <div class="shap-header">
+            <h2>🧠 AI Decision Analysis(Just simplifying shap analysis)</h2>
+            <p>See which audio characteristics most influenced the genre prediction (82% accuracy model)</p>
+        </div>
+        <div class="shap-content">
+            <div class="shap-explanation">
+                <h4>📊 How to Read This Chart:</h4>
+                <p>• <strong>Longer bars = stronger influence</strong> on the AI's decision</p>
+                <p>• <span style="color: #3b82f6; font-weight: bold;">Blue bars</span> = pushed the AI toward this genre</p>
+                <p>• <span style="color: #ef4444; font-weight: bold;">Red bars</span> = pushed the AI away from this genre</p>
+                <p>• <strong>Numbers show influence strength</strong> (higher = more important)</p>
+            </div>
+            <div class="shap-features">
+                ${sortedFeatures.map(feature => createShapFeatureBar(feature, maxImportance)).join('')}
+            </div>
+            <div class="shap-learn-more">
+                <h4>🎓 What This Teaches You:</h4>
+                <p>This shows you exactly how AI "listens" to music - it focuses on specific audio patterns that humans might not consciously notice. Each bar represents a different aspect of sound that helps distinguish between genres.</p>
+            </div>
+        </div>
+    `;
+}
+
+function createShapFeatureBar(feature, maxImportance) {
+    const isPositive = feature.importance > 0;
+    const barWidth = (feature.absImportance / maxImportance) * 100;
+    const barColor = isPositive ? 'shap-positive' : 'shap-negative';
+    const arrow = isPositive ? '✓' : '✗';
+    
+    // Get user-friendly name and explanation
+    const featureInfo = getFeatureExplanation(feature.name);
+    
+    return `
+        <div class="shap-feature">
+            <div class="shap-feature-info">
+                <div class="shap-feature-name">${featureInfo.displayName}</div>
+                <div class="shap-feature-desc">${featureInfo.description}</div>
+            </div>
+            <div class="shap-bar-container">
+                <div class="shap-bar ${barColor}" style="width: ${barWidth}%">
+                    <span class="shap-value">${Math.abs(feature.importance).toFixed(2)}</span>
+                </div>
+                <div class="shap-indicator">
+                    <span class="shap-arrow ${isPositive ? 'positive' : 'negative'}">${arrow}</span>
+                    <span class="shap-direction">${isPositive ? 'Supports' : 'Against'}</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function getFeatureExplanation(featureName) {
+    const explanations = {
+        // Tempo
+        'tempo': {
+            displayName: 'Music Speed (Tempo)',
+            description: 'How fast or slow the beat is (like your heart rate for music)'
+        },
+        
+        // MFCCs - Voice & Instrument Characteristics
+        'mfcc_0': {
+            displayName: 'Overall Sound Character',
+            description: 'The main "voice" or personality of the music'
+        },
+        'mfcc_1': {
+            displayName: 'Vocal Warmth',
+            description: 'How warm and inviting the voices/instruments sound'
+        },
+        'mfcc_2': {
+            displayName: 'Sound Clarity',
+            description: 'How clear and crisp the audio sounds'
+        },
+        'mfcc_3': {
+            displayName: 'Instrument Texture',
+            description: 'The unique "feel" that makes instruments recognizable'
+        },
+        'mfcc_4': {
+            displayName: 'Voice Roughness',
+            description: 'How smooth or rough the vocal tones are'
+        },
+        'mfcc_5': {
+            displayName: 'Sound Depth',
+            description: 'How deep and full the overall sound feels'
+        },
+        'mfcc_6': {
+            displayName: 'Tonal Quality',
+            description: 'The unique tone that gives music its character'
+        },
+        'mfcc_7': {
+            displayName: 'Voice/Instrument Blend',
+            description: 'How well different sounds mix together'
+        },
+        'mfcc_8': {
+            displayName: 'Sound Smoothness',
+            description: 'How smooth the overall audio texture is'
+        },
+        'mfcc_9': {
+            displayName: 'Harmonic Richness',
+            description: 'How complex and rich the harmonies are'
+        },
+        'mfcc_10': {
+            displayName: 'Audio Brightness',
+            description: 'How bright and sparkly the high frequencies are'
+        },
+        'mfcc_11': {
+            displayName: 'Sound Fullness',
+            description: 'How complete and full the sound feels'
+        },
+        'mfcc_12': {
+            displayName: 'Voice/Instrument Detail',
+            description: 'Fine details in how voices and instruments sound'
+        },
+        
+        // Chroma - Musical Notes
+        'chroma_0': {
+            displayName: 'C Note Strength',
+            description: 'How much the musical note C appears in the song'
+        },
+        'chroma_1': {
+            displayName: 'C# Note Strength',
+            description: 'How much the musical note C# appears in the song'
+        },
+        'chroma_2': {
+            displayName: 'D Note Strength',
+            description: 'How much the musical note D appears in the song'
+        },
+        'chroma_3': {
+            displayName: 'D# Note Strength',
+            description: 'How much the musical note D# appears in the song'
+        },
+        'chroma_4': {
+            displayName: 'E Note Strength',
+            description: 'How much the musical note E appears in the song'
+        },
+        'chroma_5': {
+            displayName: 'F Note Strength',
+            description: 'How much the musical note F appears in the song'
+        },
+        'chroma_6': {
+            displayName: 'F# Note Strength',
+            description: 'How much the musical note F# appears in the song'
+        },
+        'chroma_7': {
+            displayName: 'G Note Strength',
+            description: 'How much the musical note G appears in the song'
+        },
+        'chroma_8': {
+            displayName: 'G# Note Strength',
+            description: 'How much the musical note G# appears in the song'
+        },
+        'chroma_9': {
+            displayName: 'A Note Strength',
+            description: 'How much the musical note A appears in the song'
+        },
+        'chroma_10': {
+            displayName: 'A# Note Strength',
+            description: 'How much the musical note A# appears in the song'
+        },
+        'chroma_11': {
+            displayName: 'B Note Strength',
+            description: 'How much the musical note B appears in the song'
+        },
+        
+        // Spectral Contrast - Frequency Analysis
+        'spectral_contrast_0': {
+            displayName: 'Bass vs Treble Balance',
+            description: 'The difference between deep bass and high treble sounds'
+        },
+        'spectral_contrast_1': {
+            displayName: 'Low-Mid Frequency Color',
+            description: 'The richness in the lower-middle sound range'
+        },
+        'spectral_contrast_2': {
+            displayName: 'Mid Frequency Richness',
+            description: 'How full and rich the middle frequencies are'
+        },
+        'spectral_contrast_3': {
+            displayName: 'Upper-Mid Brightness',
+            description: 'The clarity in the upper-middle frequency range'
+        },
+        'spectral_contrast_4': {
+            displayName: 'High Frequency Sparkle',
+            description: 'The presence and sparkle in high frequencies'
+        },
+        'spectral_contrast_5': {
+            displayName: 'Extreme High Presence',
+            description: 'The very highest sounds that add "air" and space'
+        },
+        'spectral_contrast_6': {
+            displayName: 'Overall Frequency Contrast',
+            description: 'The overall contrast across all sound frequencies'
+        },
+        
+        // Tonnetz
+        'tonnetz_0': {
+            displayName: 'Harmonic Stability',
+            description: 'How stable or tense the musical harmony feels'
+        }
+    };
+    
+    return explanations[featureName] || {
+        displayName: featureName.replace(/_/g, ' ').toUpperCase(),
+        description: 'Audio characteristic used by the AI model'
+    };
+}
+	
+// Initialize educational content
+document.addEventListener('DOMContentLoaded', () => {
+    new EducationalContent();
+    console.log("JavaScript is working!");
+    console.log('🎵 Music Feature Explorer loaded and ready!');
+    console.log('Make sure your Python backend is running on port 5000');
+});
+</script>
+
+<style>
+/* Educational Content Styles */
+.learn-button {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: auto;
+    margin-right: 15px;
+}
+
+.learn-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.educational-section {
+    background: linear-gradient(135deg, #f8f9ff, #e8ebff);
+    margin: 0 20px 20px 20px;
+    border-radius: 15px;
+    padding: 25px;
+    border: 2px solid #667eea;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.educational-header h3 {
+    color: #2d3748;
+    margin-bottom: 10px;
+    font-size: 1.3em;
+}
+
+.educational-explanation {
+    color: #4a5568;
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+.concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.concept-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.concept-card:hover {
+    transform: translateY(-3px);
+}
+
+.concept-header h4 {
+    color: #2d3748;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.concept-visual {
+    margin: 15px 0;
+    padding: 15px;
+    background: #f7fafc;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.concept-description p {
+    margin-bottom: 8px;
+    color: #4a5568;
+    line-height: 1.5;
+}
+
+/* Visual Components */
+.tempo-comparison {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.tempo-example {
+    text-align: center;
+}
+
+.tempo-bar {
+    background: #667eea;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(0.95); }
+}
+
+.brightness-comparison, .width-comparison {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.brightness-example, .width-example {
+    text-align: center;
+    flex: 1;
+    margin: 0 10px;
+}
+
+.frequency-bar {
+    height: 40px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+}
+
+.frequency-spectrum {
+    height: 40px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.frequency-spectrum.narrow {
+    background: linear-gradient(to right, transparent 30%, #667eea 35%, #667eea 65%, transparent 70%);
+}
+
+.frequency-spectrum.wide {
+    background: linear-gradient(to right, #667eea 10%, #4ecdc4 50%, #667eea 90%);
+}
+
+.mfcc-explanation {
+    text-align: center;
+}
+
+.mfcc-bars {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    height: 60px;
+    gap: 3px;
+    margin-bottom: 10px;
+}
+
+.mfcc-bar {
+    width: 8px;
+    background: linear-gradient(to top, #667eea, #764ba2);
+    border-radius: 4px 4px 0 0;
+    animation: grow 1s ease-out;
+}
+
+@keyframes grow {
+    from { height: 0%; }
+    to { height: 100%; }
+}
+
+.chroma-wheel {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    border-radius: 50%;
+}
+
+.chroma-note {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    font-weight: 600;
+    color: white;
+    top: 50%;
+    left: 50%;
+    margin: -15px 0 0 -15px;
+    transform-origin: 15px 15px;
+}
+
+.distortion-comparison {
+    display: flex;
+    justify-content: space-around;
+}
+
+.waveform {
+    text-align: center;
+    flex: 1;
+}
+
+.wave-svg {
+    width: 80px;
+    height: 40px;
+    margin-bottom: 5px;
+}
+
+.loudness-meter {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    height: 80px;
+    gap: 10px;
+}
+
+.loudness-bar {
+    width: 30px;
+    border-radius: 4px 4px 0 0;
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    font-size: 0.7em;
+    color: white;
+    font-weight: 600;
+    padding-bottom: 5px;
+}
+
+.loudness-bar.whisper { background: #48bb78; }
+.loudness-bar.normal { background: #ed8936; }
+.loudness-bar.loud { background: #f56565; }
+.loudness-bar.shout { background: #9f7aea; }
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .educational-section {
+        margin: 0 10px 15px 10px;
+        padding: 20px;
+    }
+    
+    .concepts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .learn-button {
+        font-size: 0.7em;
+        padding: 4px 8px;
+    }
+}
+/* Genre Prediction Summary */
+.genre-prediction-summary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.prediction-header h2 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.primary-prediction {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.2em;
+}
+
+.genre-label {
+    opacity: 0.9;
+    margin-right: 10px;
+}
+
+.genre-value {
+    font-weight: bold;
+    font-size: 1.3em;
+}
+
+.probability-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.prob-bar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.prob-label {
+    min-width: 80px;
+    font-weight: 500;
+}
+
+.prob-progress {
+    flex: 1;
+    height: 8px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.prob-fill {
+    height: 100%;
+    background: rgba(255,255,255,0.8);
+    border-radius: 4px;
+    transition: width 0.8s ease;
+}
+
+.prob-value {
+    min-width: 45px;
+    text-align: right;
+    font-weight: 600;
+}
+</style>
+</body>
+</html>
