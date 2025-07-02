@@ -212,9 +212,9 @@ THE AI WORKFLOW(just for a big picture view):
 3.	🤖 XGBoost model (THE AI) takes features → predicts genre
 4.	SHAP explains what the XGBoost model was "thinking"
 SO WHEN WE SAY:
-1.	"AI predicts Rock with 73% confidence" = XGBoost model output
-2.	"AI has 82% accuracy" = XGBoost model performance
-2.	"AI looks at spectral contrast" = XGBoost learned these features matter
+   1.	"AI predicts Rock with 73% confidence" = XGBoost model output
+   2.	"AI has 82% accuracy" = XGBoost model performance
+   3.	"AI looks at spectral contrast" = XGBoost learned these features matter
 
 📈 Future Improvements
 1.	[ ] Expand to more genres(can be implemented with a more trustworthy dataset-would help ensure accuracy doesn't fall)
