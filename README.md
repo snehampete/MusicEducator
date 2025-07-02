@@ -5,7 +5,7 @@ An intelligent music genre classifier that analyzes audio files and provides edu
 ## ✨ Features
 
 ### 🎯 AI Genre Classification
-- **81% accuracy** on 4-genre classification (Classical, Jazz, Rock, Disco)
+- **81.6% accuracy** on 4-genre classification (Classical, Jazz, Rock, Disco)
 - Real-time audio analysis of uploaded files
 - Probability scores for each genre prediction
 
@@ -54,7 +54,7 @@ An intelligent music genre classifier that analyzes audio files and provides edu
         jazz       0.84      0.80      0.82        20
         rock       0.88      0.70      0.78        20
 
-    accuracy                           0.81        80
+    accuracy                           0.816        80
 ```
 
 ## 📁 Project Structure
