@@ -1,6 +1,6 @@
 # Music Assistant AI
 
-An AI-powered music genre classifier with 81% accuracy.
+An AI-powered music genre classifier with 81.6% accuracy.
 
 ## Features
 - Upload audio files for genre analysis
