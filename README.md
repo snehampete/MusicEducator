@@ -11,4 +11,4 @@ An AI-powered music genre classifier with 81.6% accuracy.
 ## Tech Stack
 - Backend: Python Flask with librosa, XGBoost, SHAP
 - Frontend: HTML/CSS/JavaScript
-- Model: 81% accurate 4-genre classifier (Classical, Jazz, Rock, Disco)
+- Model: 81.6% accurate 4-genre classifier (Classical, Jazz, Rock, Disco)
