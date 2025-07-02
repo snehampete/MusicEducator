@@ -1,4 +1,4 @@
-🎵 The ultimate Music technicality educator!!
+🎵 The ultimate music technicality educator!!
 
 Presenting an intelligent music genre classifier that analyzes audio files and provides educational insights about music characteristics! Built with machine learning and explainable AI(for a change- you don’t just see the output numerical values of audio analysis, but a simple intuitive way to understand WHY exactly AI made those decisions)
 
