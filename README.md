@@ -122,52 +122,52 @@ Expected Results
    
 🛠️ Tech Stack
 Backend
-•	Python Flask - Web framework
-•	librosa - Audio analysis and feature extraction
-•	XGBoost - Machine learning classifier
-•	SHAP - Model explainability
-•	scikit-learn - Data preprocessing and scaling
-•	NumPy - Numerical computations
+1.	Python Flask - Web framework
+2. librosa - Audio analysis and feature extraction
+3.	XGBoost - Machine learning classifier
+4.	SHAP - Model explainability
+5.	scikit-learn - Data preprocessing and scaling
+6.	NumPy - Numerical computations
+   
 
 Frontend
-•	HTML/CSS/JavaScript - User interface
-•	Responsive design
-•	Interactive visualizations - Progress bars, tooltips, feature cards
+1.	HTML/CSS/JavaScript - User interface
+2.	Responsive design
+3.	Interactive visualizations - Progress bars, tooltips, feature cards
 
 Machine Learning Pipeline
-•	Dataset: GTZAN (400 samples across 4 genres)(the dataset originally contains 1000 samples across 10 genres but due to unimpressive credibility of the dataset, model had to be trained among 4 genres only)
-•	Features: 34 audio characteristics (MFCCs, chroma, spectral contrast, tonnetz, tempo)
-•	Model: XGBoost classifier with 82% test accuracy
-•	Cross-validation: 79.6% ± 2.6% accuracy
-📊 Model Performance
-              precision    recall  f1-score   support
-   classical       0.76      0.95      0.84        20
-       disco       0.80      0.80      0.80        20
-        jazz       0.84      0.80      0.82        20
-        rock       0.88      0.70      0.78        20
+1.	Dataset: GTZAN (400 samples across 4 genres)(the dataset originally contains 1000 samples across 10 genres but due to unimpressive credibility of the dataset, model had to be trained among 4 genres only)
+2.	Features: 34 audio characteristics (MFCCs, chroma, spectral contrast, tonnetz, tempo)
+3.	Model: XGBoost classifier with 82% test accuracy
+4.	Cross-validation: 79.6% ± 2.6% accuracy
 
-    accuracy                           0.82         80
   	
 💻 System Requirements
 Minimum
-•	OS: Windows 10, macOS 10.14, Ubuntu 18.04
-•	RAM: 4GB
-•	Storage: 2GB free space
-•	Python: 3.8+
+1.	OS: Windows 10, macOS 10.14, Ubuntu 18.04
+2.	RAM: 4GB
+3.	Storage: 2GB free space
+4.	Python: 3.8+
 
 Recommended
-•	RAM: 8GB (faster processing)
-•	Storage: 5GB (for music files)
-•	Python: 3.9 or 3.10
+1.	RAM: 8GB (faster processing)
+2.	Storage: 5GB (for music files)
+3.	Python: 3.9 or 3.10
 
 📁 Project Structure
 MusicEducator/
 ├── backend.py              # Flask backend with API endpoints
+
 ├── requirements.txt        # Python dependencies
+
 ├── music_classifier.pkl    # Trained XGBoost model
+
 ├── feature_scaler.pkl      # StandardScaler for features
+
 ├── shap_explainer.pkl      # SHAP TreeExplainer
+
 ├── label_encoder.pkl       # Genre label encoder
+
 └── index.html             # Frontend HTML with embedded CSS/JS
 
 🎵 Supported Audio Formats
@@ -200,11 +200,11 @@ This project demonstrates:
 
 🏆 Success Confirmation
 You'll know it's working when:
-•	✅ Browser shows the Music Assistant interface
-•	✅ File upload area is visible and functional
-•	✅ Audio analysis completes without errors
-•	✅ Results show genre prediction and feature analysis
-•	✅ SHAP analysis displays properly
+1.	✅ Browser shows the Music Assistant interface
+2.	✅ File upload area is visible and functional
+3.	✅ Audio analysis completes without errors
+4.	✅ Results show genre prediction and feature analysis
+5.	✅ SHAP analysis displays properly
 
 THE AI WORKFLOW(just for a big picture view):
 1.	librosa extracts 34 features from audio
@@ -212,16 +212,16 @@ THE AI WORKFLOW(just for a big picture view):
 3.	🤖 XGBoost model (THE AI) takes features → predicts genre
 4.	SHAP explains what the XGBoost model was "thinking"
 SO WHEN WE SAY:
-•	"AI predicts Rock with 73% confidence" = XGBoost model output
-•	"AI has 82% accuracy" = XGBoost model performance
-•	"AI looks at spectral contrast" = XGBoost learned these features matter
+1.	"AI predicts Rock with 73% confidence" = XGBoost model output
+2.	"AI has 82% accuracy" = XGBoost model performance
+2.	"AI looks at spectral contrast" = XGBoost learned these features matter
 
 📈 Future Improvements
-•	[ ] Expand to more genres(can be implemented with a more trustworthy dataset-would help ensure accuracy doesn't fall)
-•	[ ] Add temporal analysis (verse/chorus detection)
-•	[ ] Implement deep learning models(by working on a way better dataset next time, so that spectrogram analysis has a good quality and quantity of audio data to learn from!)
-•	[ ] Real-time audio streaming analysis
-•	[ ] Mobile app development
+1.	[ ] Expand to more genres(can be implemented with a more trustworthy dataset-would help ensure accuracy doesn't fall)
+2.	[ ] Add temporal analysis (verse/chorus detection)
+3.	[ ] Implement deep learning models(by working on a way better dataset next time, so that spectrogram analysis has a good quality and quantity of audio data to learn from!)
+4.	[ ] Real-time audio streaming analysis
+5.	[ ] Mobile app development
 (Educational project - feel free to learn from and build upon this work. Built with ❤️ for music education😍)
 ________________________________________
 
