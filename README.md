@@ -211,6 +211,7 @@ THE AI WORKFLOW(just for a big picture view):
 2.	StandardScaler normalizes the features
 3.	🤖 XGBoost model (THE AI) takes features → predicts genre
 4.	SHAP explains what the XGBoost model was "thinking"
+
 SO WHEN WE SAY:
    1.	"AI predicts Rock with 73% confidence" = XGBoost model output
    2.	"AI has 82% accuracy" = XGBoost model performance
