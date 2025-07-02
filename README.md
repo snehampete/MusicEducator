@@ -55,6 +55,7 @@ For Mac Users
 7.	cd MusicEducator
 8.	pip3 install -r requirements.txt
 9.	python3 backend.py
+    
 For Linux Users
 1.	Install dependencies:
 2.	sudo apt update
@@ -64,6 +65,8 @@ For Linux Users
 6.	cd MusicEducator
 7.	pip3 install -r requirements.txt
 8.	python3 backend.py
+
+   
 🔧 Troubleshooting Common Issues
 "Command not found" errors
 •	Windows: Reinstall Python with "Add to PATH" checked
