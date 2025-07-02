@@ -60,7 +60,7 @@ An intelligent music genre classifier that analyzes audio files and provides edu
 ## 📁 Project Structure
 
 ```
-MusicAssistant/
+MusicEducator/
 ├── backend.py              # Flask backend with API endpoints
 ├── requirements.txt        # Python dependencies
 ├── music_classifier.pkl    # Trained XGBoost model
