@@ -6,13 +6,17 @@ Presenting an intelligent music genre classifier that analyzes audio files and p
 Step 1: Clone the Repository
 git clone https://github.com/snehampet/MusicEducator.git
 cd MusicEducator
+
 Step 2: Install Python Dependencies
 pip install -r requirements.txt
+
 Step 3: Start the Backend Server
 python backend.py
+
 Step 4: Open the Website
 •	Open your web browser
 •	Go to: http://localhost:5000
+
 Step 5: Test with Audio
 •	Click "Choose File" or drag and drop an audio file
 •	Wait for analysis (30-60 seconds)
@@ -23,20 +27,24 @@ Before starting, ensure you have:
 •	Git installed
 •	At least 2GB free disk space
 •	Audio files to test (MP3, WAV, M4A formats)
+
+
 🛠️ Detailed Installation Guide
 For Windows Users
 1.	Install Python:
 o	Download from python.org
 o	✅ Check "Add Python to PATH" during installation
-2.	Install Git:
+3.	Install Git:
 o	Download from git-scm.com
-3.	Open Command Prompt:
+4.	Open Command Prompt:
 o	Press Win + R, type cmd, press Enter
-4.	Run the commands:
-5.	git clone https://github.com/snehampet/MusicEducator.git
-6.	cd MusicEducator
-7.	pip install -r requirements.txt
-8.	python backend.py
+5.	Run the commands:
+6.	git clone https://github.com/snehampet/MusicEducator.git
+7.	cd MusicEducator
+8.	pip install -r requirements.txt
+9.	python backend.py
+
+   
 For Mac Users
 1.	Install Homebrew (if not installed):
 2.	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
