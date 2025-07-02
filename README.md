@@ -89,28 +89,34 @@ Test Files to Try
 2.	Rock song - Should predict "Rock"
 3.	Jazz track - Should predict "Jazz"
 4.	Electronic/Dance - Should predict "Disco"
+
 Expected Results
-•	Genre prediction with confidence percentages(beware, confidence and accuracy are different metrics! Accuracy tries to convey how good the model generally is, while confidence is on how sure the model is to make a prediction.)
-•	6 feature categories filled with data
-•	SHAP analysis showing feature importance 
-•	Educational explanations for each measurement
+1.	Genre prediction with confidence percentages(beware, confidence and accuracy are different metrics! Accuracy tries to convey how good the model generally is, while confidence is on how sure the model is to make a prediction.)
+2.	6 feature categories filled with data
+3.	SHAP analysis showing feature importance 
+4.	Educational explanations for each measurement
+   
 ✨ Features
 🎯 AI Genre Classification
-•	82% accuracy on 4-genre classification (Classical, Jazz, Rock, Disco)
-•	Real-time audio analysis of uploaded files
-•	Confidence scores for each genre prediction
+1.	82% accuracy on 4-genre classification (Classical, Jazz, Rock, Disco)
+2. Real-time audio analysis of uploaded files
+3. Confidence scores for each genre prediction
+
 🔬 Audio Feature Analysis
-•	34 audio features extracted using librosa
-•	6 educational categories: Rhythm & Timing, Voice & Instrument Texture, Musical Style, Energy & Dynamics, Musical Notes & Harmony, Sound Color & Texture
-•	User-friendly explanations of technical audio measurements
+1.	34 audio features extracted using librosa
+2.	6 educational categories: Rhythm & Timing, Voice & Instrument Texture, Musical Style, Energy & Dynamics, Musical Notes & Harmony, Sound Color & Texture
+3.	User-friendly explanations of technical audio measurements
+   
 🧠 AI Explainability
-•	SHAP analysis shows which features influenced the prediction: imagine this as a sort of “scorecard” for each decision on a certain audio feature made by the trained AI. 
-•	Visual feature importance rankings
-•	Educational insights into how AI "listens" to music
+1.	SHAP analysis shows which features influenced the prediction: imagine this as a sort of “scorecard” for each decision on a certain audio feature made by the trained AI. 
+2.	Visual feature importance rankings
+3.	Educational insights into how AI "listens" to music
+   
 📚 Educational Value
-•	Simplified explanations of audio processing concepts,
-•	Interactive tooltips with analogies and listening tips,
-•	Bridge between technical measurements and musical understanding
+1.	Simplified explanations of audio processing concepts,
+2.	Interactive tooltips with analogies and listening tips,
+3.	Bridge between technical measurements and musical understanding
+   
 🛠️ Tech Stack
 Backend
 •	Python Flask - Web framework
@@ -119,10 +125,12 @@ Backend
 •	SHAP - Model explainability
 •	scikit-learn - Data preprocessing and scaling
 •	NumPy - Numerical computations
+
 Frontend
 •	HTML/CSS/JavaScript - User interface
 •	Responsive design
 •	Interactive visualizations - Progress bars, tooltips, feature cards
+
 Machine Learning Pipeline
 •	Dataset: GTZAN (400 samples across 4 genres)(the dataset originally contains 1000 samples across 10 genres but due to unimpressive credibility of the dataset, model had to be trained among 4 genres only)
 •	Features: 34 audio characteristics (MFCCs, chroma, spectral contrast, tonnetz, tempo)
@@ -143,10 +151,12 @@ Minimum
 •	RAM: 4GB
 •	Storage: 2GB free space
 •	Python: 3.8+
+
 Recommended
 •	RAM: 8GB (faster processing)
 •	Storage: 5GB (for music files)
 •	Python: 3.9 or 3.10
+
 📁 Project Structure
 MusicEducator/
 ├── backend.py              # Flask backend with API endpoints
@@ -156,11 +166,13 @@ MusicEducator/
 ├── shap_explainer.pkl      # SHAP TreeExplainer
 ├── label_encoder.pkl       # Genre label encoder
 └── index.html             # Frontend HTML with embedded CSS/JS
+
 🎵 Supported Audio Formats
 •	MP3
 •	WAV
 •	M4A
 •	Maximum file size: 50MB
+
 🔬 Audio Features Analyzed
 Rhythm & Timing (1 feature)
 •	Tempo: Beats per minute detection
@@ -182,6 +194,7 @@ This project demonstrates:
 •	Audio signal processing concepts
 •	Machine learning for creative domains
 •	User experience design for technical concepts
+
 🏆 Success Confirmation
 You'll know it's working when:
 •	✅ Browser shows the Music Assistant interface
@@ -189,7 +202,8 @@ You'll know it's working when:
 •	✅ Audio analysis completes without errors
 •	✅ Results show genre prediction and feature analysis
 •	✅ SHAP analysis displays properly
-THE AI WORKFLOW(just for a big picture reference):
+
+THE AI WORKFLOW(just for a big picture view):
 1.	librosa extracts 34 features from audio
 2.	StandardScaler normalizes the features
 3.	🤖 XGBoost model (THE AI) takes features → predicts genre
