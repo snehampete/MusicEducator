@@ -72,6 +72,7 @@ For Linux Users
 •	Windows: Reinstall Python with "Add to PATH" checked
 
 •	Mac/Linux: Use python3 and pip3 instead of python and pip
+
 "No module named 'librosa'" error
 pip install librosa numpy scipy
 
