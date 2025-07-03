@@ -179,15 +179,20 @@ MusicEducator/
 🔬 Audio Features Analyzed
 Rhythm & Timing (1 feature)
 •	Tempo: Beats per minute detection
+
 Voice & Instrument Texture (5 features)
 •	MFCCs 0-4: Fundamental audio characteristics
+
 Musical Style Characteristics (4 features)
 •	MFCCs 5-8: Genre-specific audio patterns
+
 Energy & Dynamics (4 features)
 •	MFCCs 9-12: Intensity and dynamic measurements
+
 Musical Notes & Harmony (13 features)
 •	Chroma 0-11: Individual musical note presence
 •	Tonnetz: Harmonic stability measurement
+
 Sound Color & Texture (7 features)
 •	Spectral Contrast 0-6: Frequency distribution analysis
 
@@ -223,6 +228,7 @@ SO WHEN WE SAY:
 3.	[ ] Implement deep learning models(by working on a way better dataset next time, so that spectrogram analysis has a good quality and quantity of audio data to learn from!)
 4.	[ ] Real-time audio streaming analysis
 5.	[ ] Mobile app development
+   
 (Educational project - feel free to learn from and build upon this work. Built with ❤️ for music education😍)
 ________________________________________
 
