@@ -70,16 +70,20 @@ For Linux Users
 🔧 Troubleshooting Common Issues
 "Command not found" errors
 •	Windows: Reinstall Python with "Add to PATH" checked
+
 •	Mac/Linux: Use python3 and pip3 instead of python and pip
 "No module named 'librosa'" error
 pip install librosa numpy scipy
+
 "Port already in use" error
 •	Close other applications using port 5000
 •	Or change port in backend.py: app.run(port=5001)
+
 Large file download issues
 •	Model files are 10MB+ total
 •	Ensure stable internet connection
 •	Use git clone rather than downloading ZIP
+
 Audio processing takes too long
 •	Expected: 30-60 seconds for analysis
 •	Ensure sufficient RAM (4GB+ recommended)
