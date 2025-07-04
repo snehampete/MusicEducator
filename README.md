@@ -159,6 +159,15 @@ Recommended
 2.	Storage: 5GB (for music files)
 3.	Python: 3.9 or 3.10
 
+   Training process:
+     
+1. Baseline (61%): Started with 10 genres, RandomForest and just basic features
+2. Feature Engineering(65%): Added spectral features, reached 34 total features
+3. CNN Attempt (10%): Tried EfficientNet on spectrograms, did not help. There was severe overfitting as well since images provided were not enough for deep learning
+4. Too Many Features (56%): 49+ features was a curse of dimensionality
+5. Data Augmentation (47%): backfired completely
+6. Final attempt of improvement: Reduced to analyzing only on 4 distinct genres + XGBoost.
+
 📁 Project Structure
 MusicEducator/
 ├── backend.py              # Flask backend with API endpoints
