@@ -104,23 +104,23 @@ Expected Results
 3.	SHAP analysis showing feature importance 
 4.	Educational explanations for each measurement
    
-✨ Features
-🎯 AI Genre Classification
+ Features
+ AI Genre Classification
 1.	82% accuracy on 4-genre classification (Classical, Jazz, Rock, Disco)
 2. Real-time audio analysis of uploaded files
 3. Confidence scores for each genre prediction
 
-🔬 Audio Feature Analysis
+ Audio Feature Analysis
 1.	34 audio features extracted using librosa
 2.	6 educational categories: Rhythm & Timing, Voice & Instrument Texture, Musical Style, Energy & Dynamics, Musical Notes & Harmony, Sound Color & Texture
 3.	User-friendly explanations of technical audio measurements
    
-🧠 AI Explainability
+ AI Explainability
 1.	SHAP analysis shows which features influenced the prediction: imagine this as a sort of “scorecard” for each decision on a certain audio feature made by the trained AI. 
 2.	Visual feature importance rankings
 3.	Educational insights into how AI "listens" to music
    
-📚 Educational Value
+ Educational Value
 1.	Simplified explanations of audio processing concepts,
 2.	Interactive tooltips with analogies and listening tips,
 3.	Bridge between technical measurements and musical understanding
